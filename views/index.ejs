@@ -4,29 +4,78 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BookBites</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dangrek&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <form action="/new" method="get">
-      <button type="submit">Create new note</button>
-    </form>
-    <% if (locals.books) { %> <% books.forEach(book => { %>
-    <h1>
-      <img
-        src="https://covers.openlibrary.org/b/isbn/<%= book.isbn %>-M.jpg"
-        alt=""
-      />
-    </h1>
-    <h1><%= book.title %></h1>
-    <h1><%= book.author %></h1>
-    <h1><%= book.date %></h1>
-    <h1><%= book.rating %>/10</h1>
-    <h1><%= book.note %></h1>
-    <form action="/edit/<%= book.id %>" method="get">
-      <button type="submit">Edit</button>
-    </form>
-    <form action="/delete/<%= book.id %>" method="post">
-      <button type="submit">Delete</button>
-    </form>
-    <% }) %> <% } %>
+    <div class="container">
+      <div class="text-center">
+        <h1 class="title mt-4">BookBites</h1>
+        <p>Bite-Sized Notes for Big Ideas.</p>
+        <form action="/new" method="get">
+          <button type="submit" class="btn btn-success primary">
+            Create new note
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#fdfcf7"
+            >
+              <path
+                d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"
+              />
+            </svg>
+          </button>
+        </form>
+      </div>
+
+      <% if (locals.books) { %> <% books.forEach(book => { %>
+      <div class="container my-5 d-flex">
+        <div class="me-5">
+          <img
+            src="https://covers.openlibrary.org/b/isbn/<%= book.isbn %>-M.jpg"
+            alt="<%= book.title %> cover"
+          />
+        </div>
+        <div>
+          <h1><%= book.title %> - By <%= book.author %></h1>
+          <div class="d-flex opacity-50">
+            <p class="me-3">Date read: <%= book.date %></p>
+            <p class="ms-3">Rating: <%= book.rating %>/10</p>
+          </div>
+          <p><%= book.note %></p>
+          <div class="d-flex">
+            <form action="/edit/<%= book.id %>" method="get">
+              <button type="submit" class="btn btn-success secondary">
+                Edit
+              </button>
+            </form>
+            <form action="/delete/<%= book.id %>" method="post">
+              <button type="submit" class="btn btn-success accent ms-2">
+                Delete
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <% }) %> <% } %>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
