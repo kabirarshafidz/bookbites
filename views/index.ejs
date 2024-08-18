@@ -6,6 +6,27 @@
     <title>BookBites</title>
   </head>
   <body>
-    <h1>Test</h1>
+    <form action="/new" method="get">
+      <button type="submit">Create new note</button>
+    </form>
+    <% if (locals.books) { %> <% books.forEach(book => { %>
+    <h1>
+      <img
+        src="https://covers.openlibrary.org/b/isbn/<%= book.isbn %>-M.jpg"
+        alt=""
+      />
+    </h1>
+    <h1><%= book.title %></h1>
+    <h1><%= book.author %></h1>
+    <h1><%= book.date %></h1>
+    <h1><%= book.rating %>/10</h1>
+    <h1><%= book.note %></h1>
+    <form action="/edit/<%= book.id %>" method="get">
+      <button type="submit">Edit</button>
+    </form>
+    <form action="/delete/<%= book.id %>" method="post">
+      <button type="submit">Delete</button>
+    </form>
+    <% }) %> <% } %>
   </body>
 </html>

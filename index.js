@@ -8,6 +8,12 @@ const app = express();
 const port = 3000;
 const API_URL = "https://covers.openlibrary.org/b/isbn/";
 
+const date = new Date();
+
+let day = date.getDate();
+let month = date.getMonth() + 1;
+let year = date.getFullYear();
+
 const db = new pg.Client({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
@@ -21,29 +27,37 @@ db.connect();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-async function checkBooks() {
+app.get("/", async (req, res) => {
   const result = await db.query("SELECT * FROM books ORDER BY id ASC");
-  let books = result.rows;
-  return books;
-}
-
-app.get("/", (req, res) => {
-  const existingBooks = checkBooks();
-  res.render("index.ejs", { data: existingBooks });
+  const books = result.rows;
+  console.log(books);
+  res.render("index.ejs", { books: books });
 });
 
 app.get("/new", (req, res) => {
-  res.render("new.ejs", { heading: "New Note", submit: "Create Note" });
+  if (day < 10) {
+    day = "0" + day;
+  }
+  if (month < 10) {
+    month = "0" + month;
+  }
+  let currentDate = `${year}-${month}-${day}`;
+  res.render("new.ejs", {
+    heading: "New Note",
+    submit: "Create Note",
+    date: currentDate,
+  });
 });
 
-app.get("/edit/:id", (req, res) => {
-  const existingBooks = checkBooks();
+app.get("/edit/:id", async (req, res) => {
+  const result = await db.query("SELECT * FROM books ORDER BY id ASC");
+  const existingBooks = result.rows;
   const id = parseInt(req.params.id);
   const bookToEdit = existingBooks.find((book) => book.id === id);
   res.render("new.ejs", {
     heading: "Edit Note",
     submit: "Update Note",
-    data: bookToEdit,
+    book: bookToEdit,
   });
 });
 
@@ -61,13 +75,14 @@ app.post("/new", async (req, res) => {
       [isbn, title, author, date, rating, note]
     );
 
+    console.log("Added!");
     res.redirect("/");
   } catch (error) {
     console.log(error);
   }
 });
 
-app.patch("/edit/:id", async (req, res) => {
+app.post("/edit/:id", async (req, res) => {
   const id = parseInt(req.params.id);
   const result = await db.query("SELECT * FROM books WHERE id = ($1)", [id]);
   const bookToEdit = result.rows[0];
@@ -77,7 +92,6 @@ app.patch("/edit/:id", async (req, res) => {
   const editedDate = req.body.date || bookToEdit.date;
   const editedRating = parseFloat(req.body.rating) || bookToEdit.rating;
   const editedNote = req.body.note || bookToEdit.note;
-
   try {
     await db.query(
       "UPDATE books SET isbn = $1, title = $2, author = $3, date = $4, rating = $5, note = $6 WHERE id = $7",
@@ -91,17 +105,18 @@ app.patch("/edit/:id", async (req, res) => {
         id,
       ]
     );
-
+    console.log("Updated!");
     res.redirect("/");
   } catch (error) {
     console.log(error);
   }
 });
 
-app.delete("/delete/:id", async (req, res) => {
+app.post("/delete/:id", async (req, res) => {
   const id = parseInt(req.params.id);
   try {
     await db.query("DELETE FROM books WHERE id = ($1)", [id]);
+    console.log("Deleted!");
     res.redirect("/");
   } catch (error) {
     console.log(error);
