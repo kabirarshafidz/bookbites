@@ -9,4 +9,4 @@ pool.connect((error) => {
   console.log("Connect to Postgres successfully!");
 });
 
-module.exports = pool;
+export default pool;
