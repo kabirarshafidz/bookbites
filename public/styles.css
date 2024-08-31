@@ -3,3 +3,44 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+body {
+  background-color: #fdfcf7;
+  color: #212007;
+  font-family: "Dangrek", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.title {
+  background: linear-gradient(90deg, #d6d33a, #62dfdc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 500%;
+}
+
+.primary {
+  background-color: #d6d33a;
+}
+
+.secondary {
+  background-color: #8ce7b6;
+}
+.accent {
+  background-color: #62dfdc;
+}
+
+.btn {
+  border: none;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1em;
+  outline: none;
+  transition: border 0.3s;
+}
